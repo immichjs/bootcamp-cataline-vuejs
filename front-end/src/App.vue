@@ -64,11 +64,38 @@
     <p>Newsletter: {{ form.newsletter }}</p>
     <p>Cor: {{ form.color }}</p>
     <p>Fruta: {{ form.fruit }}</p>
+
+    <h1
+      class="static"
+      :class="{ active: isActive, 'text-danger': hasError }"
+    ></h1>
+    <h1 :class="['static', { 'text-danger': hasError }]"></h1>
+
+    <ButtonStyled />
+    <ButtonStyled text="Login">
+      <template v-slot:before>
+        <i class="fab fa-facebook-f"></i>
+      </template>
+    </ButtonStyled>
+    <ButtonStyled text="Login" @bird="action($event)">
+      <template v-slot:after>
+        <i class="fab fa-google"></i>
+      </template>
+    </ButtonStyled>
+
+    <div>
+      <button @click="component = 'Home'">Home</button>
+      <button @click="component = 'About'">About</button>
+    </div>
+
+    <component :is="component" />
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue'
+import Home from '@/components/Home.vue'
+import About from '@/components/About.vue'
 
 interface Person {
   name: string
@@ -77,6 +104,10 @@ interface Person {
 
 export default defineComponent({
   name: 'App',
+  components: {
+    Home,
+    About
+  },
   data() {
     return {
       person: {} as Person,
@@ -104,7 +135,10 @@ export default defineComponent({
         newsletter: false,
         color: '',
         fruit: ''
-      }
+      },
+      isActive: true,
+      hasError: true,
+      component: 'About'
     }
   },
   beforeCreate() {
@@ -151,6 +185,9 @@ export default defineComponent({
     },
     something() {
       console.log('Hello Cataline')
+    },
+    action(event: string) {
+      console.log(event)
     }
   },
   watch: {
@@ -161,7 +198,7 @@ export default defineComponent({
 })
 </script>
 
-<style>
+<style scoped>
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -182,4 +219,13 @@ form {
   padding-bottom: 1rem;
   border-bottom: 2px solid #000;
 }
+
+/* .button-styled {
+  position: absolute;
+  right: 0
+}
+
+::v-deep.button-styled span {
+  color: #000
+} */
 </style>
